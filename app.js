@@ -8,7 +8,7 @@ require("dotenv").config();
 
 const userRoute = require('./routes/userRoute');
 const errorHandler = require('./middleware/errorMiddleware');
-
+const db = require('./Database/db');
 
 const app = express();
 
@@ -36,15 +36,22 @@ app.use(errorHandler);
 
 const PORT = 5000 || process.env.PORT
 
-mongoose.connect(process.env.MONGO_URI).then(() => {
-    app.listen(PORT, () => {
-        console.log(`App is Running ${PORT}`);
-    })
-}).catch((err) => {
-    console.log(err);
-});
-
-// const PORT = process.env.PORT
-// app.listen(PORT, () => {
-//     console.log('App is Ruuning ');
+// mongoose.connect(process.env.MONGO_URI).then(() => {
+//     app.listen(PORT, () => {
+//         console.log(`App is Running ${PORT}`);
+//     })
+// }).catch((err) => {
+//     console.log(err);
 // });
+
+
+app.listen(PORT, () => {
+    console.log('App is Ruuning ');
+    db.connect((err) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log("Db connected");
+        }
+    })
+});

@@ -9,6 +9,7 @@ const User = require("../models/userModel");
 const { generateToken, hashToken } = require("../utils");
 const sendEmail = require("../utils/sendEmail");
 const Token = require("../models/tokenModel");
+const db = require('../Database/db');
 
 
 const cryptr = new Cryptr(process.env.CRYPTER_KEY);
@@ -36,60 +37,63 @@ const register = asyncHandler(async (req, res) => {
 
 
     // check if the user exists
-    const userExists = await User.findOne({ email });
+    db.query(`SELECT email FROM glopilot.users = ?`[email], async (err, userExists) => {
+        console.log(err);
+        if (userExists) return res.json({ status: "error", error: "User exist already login instead" });
 
-    if (userExists) {
-        res.status(400)
-        throw new Error("User exist already login instead");
-    }
+        // Get UserAgent
+        const ua = parser(req.headers['user-agent']);
+        const userAgent = [ua.ua]
 
-    // Get UserAgent
-    const ua = parser(req.headers['user-agent']);
-    const userAgent = [ua.ua]
-
-
-    // Create new user 
-    const user = await User.create({
-        name,
-        email,
-        password,
-        userAgent
-    })
-
-    // Generate Token 
-    const token = generateToken(user._id);
-
-    // Send HTTP 
-    res.cookie("token", token, {
-        path: "/",
-        httpOnly: true,
-        expires: new Date(Date.now() + 1000 * 86400), // 1 day
-        sameSite: "none",
-        // secure: true,
-    })
-
-    if (user) {
-        const { _id, name, email, number, bio, photo, role, isVerified } = user;
-
-        res.status(201).json({
-            _id,
-            name,
-            email,
-            number,
-            bio,
-            photo,
-            role,
-            isVerified,
-            token
+        // Create new user 
+        userExists = db.query('INSERT INTO users SET ?', {
+            name: name,
+            email: email,
+            password: password,
+            userAgent: userAgent
+        }, (err, user) => {
+            if (err) throw err;
+            console.log(user);
         })
-    } else {
-        res.status(400)
-        throw new Error("Invalid user input");
-    }
+
+        // Generate Token 
+        const token = generateToken(user.id);
+
+        // Send HTTP 
+        res.cookie("token", token, {
+            path: "/",
+            httpOnly: true,
+            expires: new Date(Date.now() + 1000 * 86400), // 1 day
+            sameSite: "none",
+            // secure: true,
+        }); if (user) {
+            const { _id, name, email, number, bio, photo, role, isVerified } = user;
+
+            res.status(201).json({
+                _id,
+                name,
+                email,
+                number,
+                bio,
+                photo,
+                role,
+                isVerified,
+                token
+            })
+        } else {
+            res.status(400)
+            throw new Error("Invalid user input");
+        }
+
+    })
+
+
+
+
+
 
 
 });
-
 // Login USERS
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
@@ -101,7 +105,9 @@ const loginUser = asyncHandler(async (req, res) => {
         throw new Error("please enter email and password");
     }
 
-    const user = await User.findOne({ email });
+    // const user = await User.findOne({ email });
+    const user = await ` INSERT INTO users (name,email,password) VALUES(?) `
+
 
     if (!user) {
         res.status(404)
@@ -475,14 +481,18 @@ const deleteUser = asyncHandler(async (req, res) => {
 
 // Get All USERS
 const getAllUsers = asyncHandler(async (req, res) => {
-    const users = await User.find().sort("-createdAt").select("-password");
-    if (!users) {
-        res.status(500).json({
-            message: "Something went wrong"
-        });
-    }
-    res.status(200).json(users);
-});
+    const user = await 'SELECT * FROM glopilot.users';
+    db.query(user, (err, data) => {
+        if (err) {
+            res.status(500).json({
+                message: "Something went wrong "
+            });
+        }
+        res.status(200).json(data);
+    })
+
+
+})
 
 // Get All USERS Status
 const loginStatus = asyncHandler(async (req, res) => {

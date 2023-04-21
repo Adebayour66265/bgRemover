@@ -12,7 +12,12 @@ const protect = asyncHandler(async (req, res, next) => {
         }
 
         //  verify token
-        const verified = jwt.verify(token, process.env.JWT_SECTRET);
+        const q = ' SELECT * FROM glopilot.users WHERE isVerified = ?'
+
+        db.query(q, [isVerified], async (err, user) => {
+            const verified = jwt.verify(token, process.env.JWT_SECTRET);
+        })
+        // const verified = jwt.verify(token, process.env.JWT_SECTRET);
         // Get user id frrom token 
         const user = await User.findById(verified.id).select("-password");
 
