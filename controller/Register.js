@@ -37,7 +37,7 @@ const register = asyncHandler(async (req, res) => {
         const userAgent = [ua.ua]
 
         // Create new user 
-        const user = ' INSERT INTO glopilot.users ( `name`, `email`, `password`, `userAgent` ) VALUES (?)';
+        const user = ' INSERT INTO glopilot.users SET ?, ( `name`, `email`, `password`, `userAgent` ) VALUES (?)';
         const values = {
             name: name,
             email: email,

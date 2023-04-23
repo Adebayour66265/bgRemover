@@ -1,6 +1,4 @@
-const fs = require("fs");
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
@@ -36,13 +34,6 @@ app.use(errorHandler);
 
 const PORT = 5000 || process.env.PORT
 
-// mongoose.connect(process.env.MONGO_URI).then(() => {
-//     app.listen(PORT, () => {
-//         console.log(`App is Running ${PORT}`);
-//     })
-// }).catch((err) => {
-//     console.log(err);
-// });
 
 
 app.listen(PORT, () => {

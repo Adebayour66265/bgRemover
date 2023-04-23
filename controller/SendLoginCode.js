@@ -20,40 +20,54 @@ const sendLoginCode = asyncHandler(async (req, res) => {
             res.status(404)
             throw new Error("user not found");
         }
+        console.log(user);
         // Find Login Code in DB
-        let Token = await '( `name`, `email`, `password`, `userAgent` ) VALUES (?)';
-        db.query({ userId: user.id, expireAt: { $gt: Date.now() } });
-        if (!userToken) {
-            res.status(404)
-            throw new Error("Invalid or Expire Token, please Login again");
+        let uToken = await 'SELECT * FROM glopilot.token WHERE userId = ?, (`userId`, `expireAt`)  VALUES (?)';
+        const VALUES =
+        {
+            userId: user.id,
+            expireAt: { $gt: Date.now() }
         }
 
-        const loginCode = userToken.loginToken;
-        const decryptedLoginCode = cryptr.decrypt(loginCode);
+        db.query(uToken, [VALUES], async (err, userToken) => {
+            console.log(userToken);
+            if (err) return console.log(err);
+            if (!userToken) {
+                res.status(404)
+                throw new Error("Invalid or Expire Token, please Login again");
+            }
+            const loginCode = userToken.loginToken;
+            const decryptedLoginCode = cryptr.decrypt(loginCode);
 
-        // Send Login Code Email to user
-        const subject = 'Login Access from Glopilot'
-        const send_to = email
-        const sent_from = process.env.EMAIL_USER
-        const reply_to = "noreply"
-        const template = 'Login Code'
-        const name = user.name
-        const link = decryptedLoginCode
+            // Send Login Code Email to user
+            const subject = 'Login Access from Glopilot'
+            const send_to = email
+            const sent_from = process.env.EMAIL_USER
+            const reply_to = "noreply"
+            const template = 'Login Code'
+            const name = user.name
+            const link = decryptedLoginCode
 
-        try {
-            await sendEmail(
-                subject,
-                send_to,
-                sent_from,
-                reply_to,
-                template,
-                name,
-                link);
-            res.status(200).json({ message: `Access Code to sent ${email} Email` });
-        } catch (error) {
-            res.status(500)
-            throw new Error("Email not send please try again");
-        }
+
+            try {
+                await sendEmail(
+                    subject,
+                    send_to,
+                    sent_from,
+                    reply_to,
+                    template,
+                    name,
+                    link);
+                res.status(200).json({ message: `Access Code to sent ${email} Email` });
+            } catch (error) {
+                res.status(500)
+                throw new Error("Email not send please try again");
+            }
+        });
+
+
+
+
 
     })
 

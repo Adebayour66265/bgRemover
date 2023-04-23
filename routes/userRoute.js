@@ -14,6 +14,7 @@ const getUser = require('../controller/getUser.js');
 const logOut = require('../controller/LogOut.js');
 const loginStatus = require('../controller/loginStatus.js');
 const upgradeUser = require("../controller/upGradeUser.js");
+const sendLoginCode = require("../controller/SendLoginCode.js");
 // const { loginStatus, logOut, getUser } = require("../controller/userController.js");
 // const { protect, adminOnly, authorOnly } = require("../middleware/authmiddleware");
 const router = express.Router();
@@ -38,6 +39,7 @@ router.post("/upgradeUser", upgradeUser);
 // router.post("/forgotPassword", forgotPassword);
 // router.patch("/resetPassword/:resetPassword", resetPassword);
 // router.patch("/changePassword", protect, changePassword);
+router.post("/sendLoginCode/:email", sendLoginCode);
 // router.post("/sendLoginCode/:email", sendLoginCode);
 // router.post("/loginWithCode/:email", loginWithCode);
 

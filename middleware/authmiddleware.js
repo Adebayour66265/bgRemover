@@ -12,26 +12,27 @@ const protect = asyncHandler(async (req, res, next) => {
         }
 
         //  verify token
-        const q = ' SELECT * FROM glopilot.users WHERE isVerified = ?'
+        const q = ' SELECT * FROM glopilot.users WHERE id = ?'
+        const verified = jwt.verify(token, process.env.JWT_SECTRET);
 
-        db.query(q, [isVerified], async (err, user) => {
-            const verified = jwt.verify(token, process.env.JWT_SECTRET);
+        db.query(q, [verified], async (err, result) => {
+            // Get user id frrom token
+            const user = req.user = result[0].id
+            if (!user) {
+                res.status(404)
+                throw new Error("user not find");
+            }
+            if (user.role === "suspended") {
+                res.status(400)
+                throw new Error("user suspended, please contact support");
+            }
+            req.user = user;
+            next();
         })
         // const verified = jwt.verify(token, process.env.JWT_SECTRET);
-        // Get user id frrom token 
-        const user = await User.findById(verified.id).select("-password");
 
-        if (!user) {
-            res.status(404)
-            throw new Error("user not find");
-        }
-        if (user.role === "suspended") {
-            res.status(400)
-            throw new Error("user suspended, please contact support");
-        }
+        // const user = await (verified.id).select("-password");
 
-        req.user = user;
-        next();
     } catch (err) {
         res.status(401)
         throw new Error("you are not Authorized, please login");

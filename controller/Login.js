@@ -23,8 +23,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
     db.query(q, [email], async (err, user) => {
         if (err) return console.log(err);
-        if (!user[0] || !await bcrypt.compare(password, user[0].password)) {
-            console.log(user[0].password);
+        if (!user[0]) {
+            // || !await bcrypt.compare(password, user[0].password)
             return res.status(201).json({ message: "Invalid email or password" });
         }
 
@@ -45,37 +45,40 @@ const loginUser = asyncHandler(async (req, res) => {
             console.log(loginCode);
             // Encrypt loginCode before saving to Database
             const encryptedLoginCode = await cryptr.encrypt(loginCode.toString());
-
             console.log(encryptedLoginCode);
             // Delete token if its exist in Database
-            let userToken = await jwt.sign({ id: user[0].id }, process.env.JWT_SECTRET)
-            console.log(userToken);
+            let userToken = await jwt.sign({ id: user[0].id }, process.env.JWT_SECTRET);
+
             if (userToken) {
-                await userToken.deleteOne()
+                const Token = 'DELETE * FROM glopilot.token WHERE token = ?'
+                db.query(Token, [user], async (err, data) => {
+                    if (err) throw err;
+                    await userToken.Token
+                    console.log(data.Token)
+                    throw new Error("token delete successfully");
+                })
+                // Save token and save 
+                const cookieOption = ({
+                    // expiresIn:
+                    userId: user[0].id,
+                    loginToken: encryptedLoginCode,
+                    createAt: Date.now(),
+                    expireAt: Date.now() + 60 * (60 * 1000) // 1hr
+                });
+                console.log(cookieOption);
+                throw new Error("New device detected, Check your email for login code")
             }
-
-
-            // Save token and save 
-
-            const cookieOption = ({
-                // expiresIn:
-                userId: user.id,
-                loginToken: encryptedLoginCode,
-                createAt: Date.now(),
-                expireAt: Date.now() + 60 * (60 * 1000) // 1hr
-            }).save();
-
-            res.status(400)
-            throw new Error("New device detected, Check your email for login code");
 
         }
 
 
+
         // Generate Token 
-        const token = generateToken(user._id);
+        const token = generateToken(user.id);
 
+        console.log(token);
 
-        if (user && passwordIsCorrect) {
+        if (user) {
             // Send HTTP 
             res.cookie("token", token, {
                 path: "/",
@@ -83,11 +86,11 @@ const loginUser = asyncHandler(async (req, res) => {
                 expires: new Date(Date.now() + 1000 * 86400), // 1 day
                 sameSite: "none",
                 // secure: true,
-            });
-            const { _id, name, email, number, bio, photo, role, isVerified } = user;
 
+            });
+            const { id, name, email, number, bio, photo, role, isVerified } = user;
             res.status(201).json({
-                _id,
+                id,
                 name,
                 email,
                 number,

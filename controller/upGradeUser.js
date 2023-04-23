@@ -15,12 +15,12 @@ const db = require('../Database/db');
 const upgradeUser = asyncHandler(async (req, res) => {
     const { role, id } = req.body;
 
-    const q = 'UPDATE users SET `role` =? WHERE id = ?';
+    const q = 'UPDATE * SET `role` =? WHERE id = ?';
     const values = [
         role,
         id
     ]
-    db.query(q, [...values], async (err, user) => {
+    db.query(q, [values], async (err, user) => {
         console.log(user);
         console.log(q);
         console.log(values);
