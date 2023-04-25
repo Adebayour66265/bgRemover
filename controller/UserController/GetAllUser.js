@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const db = require('../Database/db');
+const db = require('../../Database/db');
 
 // Get All USERS
 const getAllUsers = asyncHandler(async (req, res) => {

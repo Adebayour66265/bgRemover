@@ -6,15 +6,16 @@ const express = require("express");
 //     sendVerificationEmail, verifyUser, forgotPassword,
 //     resetPassword, changePassword, sendLoginCode, loginWithCode
 // } = require("../controller/userController");
-const register = require('../controller/Register.js');
-const getAllUsers = require('../controller/GetAllUser.js');
-const deleteUser = require('../controller/DeleteUser.js');
+// const register = require('../controller/Register.js');
+const getAllUsers = require('../controller/UserController/GetAllUser.js');
+const deleteUser = require('../controller/UserController/DeleteUser.js');
 const loginUser = require('../controller/Login.js');
-const getUser = require('../controller/getUser.js');
-const logOut = require('../controller/LogOut.js');
+const getUser = require('../controller/UserController/getUser.js');
+const logOut = require('../controller/UserController/LogOut.js');
 const loginStatus = require('../controller/loginStatus.js');
 const upgradeUser = require("../controller/upGradeUser.js");
 const sendLoginCode = require("../controller/SendLoginCode.js");
+const register = require("../controller/UserController/Register.js");
 // const { loginStatus, logOut, getUser } = require("../controller/userController.js");
 // const { protect, adminOnly, authorOnly } = require("../middleware/authmiddleware");
 const router = express.Router();

@@ -3,9 +3,9 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const parser = require("ua-parser-js");
 
-const { generateToken, hashToken } = require("../utils");
+const { generateToken, hashToken } = require("../../utils");
 
-const db = require('../Database/db');
+const db = require('../../Database/db');
 
 
 
@@ -22,7 +22,6 @@ const register = asyncHandler(async (req, res) => {
         res.status(400)
         throw new Error("Password must not less than 6 characters.");
     }
-
     const q = 'SELECT * FROM glopilot.users WHERE email = ?';
     // check if the user exists
     db.query(q, [email], async (err, userExists) => {
@@ -30,26 +29,20 @@ const register = asyncHandler(async (req, res) => {
         if (userExists[0]) return res.json({ status: "error", error: "User exist already login instead" })
 
         // hashed password,
+        //  const salt = bcrypt.genSaltSync(10);
 
-        const hashedassword = await bcrypt.hash(password, 12)
+        //const hashPassword = await bcrypt.hash(password, 10)
         // Get UserAgent
         const ua = parser(req.headers['user-agent']);
         const userAgent = [ua.ua]
-
+        console.log("hashhhhhh", password);
         // Create new user 
-        const user = ' INSERT INTO glopilot.users SET ?, ( `name`, `email`, `password`, `userAgent` ) VALUES (?)';
-        const values = {
-            name: name,
-            email: email,
-            password: hashedassword,
-            userAgent
-        }
-
-        db.query(user, [values], (err, data) => {
+        db.query('INSERT INTO glopilot.users SET name =?, email =?, password =?, userAgent=?', [name, email, password, userAgent], (err, data) => {
             if (err) throw err;
             // Generate Token 
-            const token = generateToken(user.id);
-
+            console.log(data);
+            const token = generateToken(data.id);
+            console.log(data);
             // Send HTTP 
             res.cookie("token", token, {
                 path: "/",
@@ -60,7 +53,7 @@ const register = asyncHandler(async (req, res) => {
 
 
             if (data) {
-                const { id, name, email, number, bio, photo, role, isVerified } = user;
+                const { id, name, email, number, bio, photo, role, isVerified } = data;
 
                 res.status(201).json({
                     id,

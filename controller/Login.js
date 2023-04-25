@@ -66,16 +66,12 @@ const loginUser = asyncHandler(async (req, res) => {
                     expireAt: Date.now() + 60 * (60 * 1000) // 1hr
                 });
                 console.log(cookieOption);
-                throw new Error("New device detected, Check your email for login code")
+                throw new Error("New device detected, Check your email for login code");
             }
 
         }
-
-
-
         // Generate Token 
         const token = generateToken(user.id);
-
         console.log(token);
 
         if (user) {

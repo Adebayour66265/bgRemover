@@ -44,10 +44,8 @@ const loginWithCode = asyncHandler(async (req, res) => {
         user.userAgent.push(thisUserAgent);
         await user.save();
 
-
         // Generate Token 
         const token = generateToken(user.id);
-
         // Send HTTP 
         res.cookie("token", token, {
             path: "/",

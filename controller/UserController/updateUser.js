@@ -4,11 +4,11 @@ const jwt = require("jsonwebtoken");
 const parser = require("ua-parser-js");
 const Cryptr = require('cryptr');
 const cryptr = new Cryptr(process.env.CRYPTER_KEY);
-const sendEmail = require("../utils/sendEmail");
+const sendEmail = require("../../utils/sendEmail");
 
-const { generateToken, hashToken } = require("../utils");
+const { generateToken, hashToken } = require("../../utils");
 
-const db = require('../Database/db');
+const db = require('../../Database/db');
 
 
 // Update USERS
