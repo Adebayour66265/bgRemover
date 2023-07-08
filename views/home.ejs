@@ -1,0 +1,46 @@
+
+<%- include('includes/head') %>
+<link rel="stylesheet" href="/home.css">
+<title>Url Shortner</title>
+</head>
+<body>
+<main>
+    <p class="section-subtitle">Url Shortner</p>
+    <div class="grid-item">
+          <div class="wrapper">
+          <form action="/posts" method="POST">
+            <input type="text" placeholder="Short Url"  name="url" required/>
+              <button class="btn btn-primary send-btn">
+              Short Url
+              </button>
+          </form>
+        </div>
+      </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>
+          Full url
+        </th>
+        <th>
+          Short url
+        </th>
+        <th>
+          Clicks
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a href="nnnn">nnnnn</a></td>
+        <td><a href="1111">1111</a></td>
+        <td>1110</td>
+      </tr>
+    </tbody>
+  </table>
+    
+  
+</main>
+</body>
+</html>

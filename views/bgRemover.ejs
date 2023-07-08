@@ -1,0 +1,25 @@
+ <%- include('includes/head') %>
+    <link rel="stylesheet" href="/new-post.css">
+    <script src="/script/file-preview.js" defer></script>
+    <title>Background Remove</title>
+  </head>
+  <body>
+    <h1 class="item-heardin">Background Remover</h1>
+    <main>
+        <div class="grid-item new-p">
+          
+              <div class="wrapper">
+              <form action="/bgRemover" method="post" enctype="multipart/form-data">
+               <input type="file" name="image" id="image" accept="image/*"/>
+                <img src="" id="image-preview" alt="Choose your image">
+                  <button class="btn btn-primary send-btn">
+                    Add Post
+                </button>
+              </form>
+            </div>
+          </div>
+    
+      
+    </main>
+  </body>
+</html>

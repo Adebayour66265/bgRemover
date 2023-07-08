@@ -1,49 +1,70 @@
-const express = require("express");
+const path = require("path");
+const fs = require("fs");
+const { exec } = require("child_process");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
-require("dotenv").config();
+const express = require("express");
+const Formidable = require("formidable");
+const Rembg = require("rembg-node");
+// const Rembg = require("sha");
 
-const userRoute = require('./routes/userRoute');
-const errorHandler = require('./middleware/errorMiddleware');
-const db = require('./Database/db');
+require("dotenv").config();
 
 const app = express();
 
 //  middlewares
-app.use(express.json())
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors({
-    origin: '*',
+app.use(
+  cors({
+    origin: "*",
     credentials: true,
-}));
+  })
+);
 
-// Routes 
-app.use('/api/users', userRoute)
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+app.use(express.static("public"));
 
-app.get('/', (req, res) => {
-    console.log('Home Pages');
-})
+// Routes
+// app.get("/", (req, res) => {
+//   res.render("home");
+// });
 
+app.get("/", (req, res) => {
+  res.render("bgRemover");
+});
+
+app.post("/bgRemover", (req, res) => {
+  let form = new Formidable.IncomingForm();
+
+  form.parse(req, (err, fieds, files) => {
+    if (err) {
+      console.log("Error parse form", err);
+      return res.status(500).send("500");
+    }
+    let inputFile = files.image;
+
+    let outputPath = Date.now() + ".jpg";
+
+    let command = `rembg i ${inputFile.path} ${outputPath}`;
+    exec(command, (err, stdout, stderr) => {
+      if (err) {
+        console.log(err);
+      }
+      res.download(outputPath, () => {
+        fs.unlinkSync(outputPath);
+      });
+    });
+  });
+});
 
 // Error middleware
-app.use(errorHandler);
-
-
-const PORT = 5000 || process.env.PORT
-
-
+const PORT = 3000 || process.env.PORT;
 
 app.listen(PORT, () => {
-    console.log('App is Ruuning ');
-    db.connect((err) => {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log("Db connected");
-        }
-    })
+  console.log("App is Runing ");
+  0;
 });

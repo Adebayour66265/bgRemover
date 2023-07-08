@@ -1,0 +1,112 @@
+@import url(./variable.css);
+
+/* @import url(./animation.css);
+@import url(./medial.css); */
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html {
+  font-family: "Montserrat", sans-serif;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+body {
+  margin-top: 8.5rem;
+  background-color: #d0cbec;
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+}
+::-webkit-scrollbar-track {
+  background: var(--light-gray);
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: var(--red-orange-wheel);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--urtramarine-blue);
+}
+
+/*  pages */
+.container {
+  background: var(--white);
+  max-width: 1440px;
+  margin: auto;
+  overflow: hidden;
+}
+.section-subtittle {
+  color: var(--urtramarine-blue);
+  font-weight: var(--fw-7);
+  text-transform: uppercase;
+  font-size: var(--fs-5);
+  font-family: "Poppins", sans-serif;
+}
+.section-text {
+  color: var(--sonic-sliver);
+  font-family: "Roboto", sans-serif;
+  font-size: var(--fs-6);
+  line-height: 1.6;
+}
+.section-title {
+  font-size: var(--fs-4);
+  font-weight: var(--fw-9);
+  color: var(--oxford-blue);
+  line-height: 1.3;
+}
+
+.section-subtittle {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: var(--fs-6);
+  font-weight: var(--fw-6);
+}
+
+.section-subtitle {
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: var(--fs-5);
+  font-weight: var(--fw-7);
+}
+.section-title {
+  text-align: center;
+  margin-bottom: 60px;
+}
+.grid-item .wrapper {
+  position: relative;
+  /* display: inline-block; */
+  display: grid;
+  border-radius: 8px;
+  width: 100%;
+  overflow: hidden;
+}
+.grid-item .wrapper input {
+  width: 100%;
+  max-width: 100%;
+  padding: 20px 30px;
+  color: var(--oxford-blue);
+  font-family: "Roboto", sans-serif;
+  font-size: var(--fs-6);
+  border: none;
+  outline: none;
+  margin: 0.3rem 0;
+  border-radius: 8px;
+}
+.wrapper {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+button {
+  padding: 1rem;
+  border: 2px solid #fff;
+  border-radius: 1rem;
+  margin: 1rem 0;
+  font-weight: 700;
+}
